@@ -3,6 +3,7 @@ package unigramproject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Equations {
 	
@@ -11,7 +12,11 @@ public class Equations {
 		double n = probs.size();
 		// N
 		for(double prob : probs) {
-			lnsum += Math.log(prob);
+			if (prob == 0) {
+				lnsum += Double.NEGATIVE_INFINITY;
+			} else {
+				lnsum += Math.log(prob);
+			}
 		}
 		return Math.exp((-1/n)*lnsum);
 	}
@@ -27,4 +32,19 @@ public class Equations {
 	public static double predictiveDis (double mk, double alphak, double alpha0, double n) {
 		return ((mk + alphak)/(n + alpha0));
 	}
+	
+	public static double gamma(double x) {
+		return factorial(x-1);
+	}
+	
+	public static double factorial(double n) {
+		double output = 1;
+		if (n == 1) {
+			return 1;
+		} else {
+			output = factorial (n-1) * n;
+			return output;
+		}
+	}
+	
 }
