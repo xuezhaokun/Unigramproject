@@ -1,5 +1,6 @@
 package unigramproject;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,18 +34,16 @@ public class Equations {
 		return ((mk + alphak)/(n + alpha0));
 	}
 	
-	public static double gamma(double x) {
+	public static BigDecimal gamma(double x) {
 		return factorial(x-1);
 	}
 	
-	public static double factorial(double n) {
-		double output = 1;
-		if (n == 1) {
-			return 1;
-		} else {
-			output = factorial (n-1) * n;
-			return output;
-		}
+	public static BigDecimal factorial(double n) {
+		 BigDecimal fact = BigDecimal.valueOf(1);
+		 for (int i = 1; i <= n; i++){
+		        fact = fact.multiply(BigDecimal.valueOf(i));
+		 }
+		return fact;
 	}
 	
 }

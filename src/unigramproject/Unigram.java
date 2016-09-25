@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class Unigram {
 	
@@ -34,14 +36,14 @@ public class Unigram {
 		return words;
 	}
 	
-	public static Set<String> buildVocabulary(String trainFile, String testFile) throws IOException {
+	public static Set<String> buildVocabulary(List<String> filenames) throws IOException {
 		Set<String> vocabulary = new HashSet<String>();
 		List<String> allwords = new ArrayList<String>();
-		List<String> trainingWords = Unigram.readInputFile(trainFile);
-		List<String> testWords = Unigram.readInputFile(testFile);
-		allwords.addAll(trainingWords);
-		allwords.addAll(testWords);
-		vocabulary.addAll(allwords);
+		for (String filename: filenames) {
+			List<String> words = Unigram.readInputFile(filename);
+			allwords.addAll(words);		
+		}
+		vocabulary.addAll(allwords);	
 		System.out.println("vocabulary size: " + vocabulary.size());
 		return vocabulary;
 	}
@@ -124,27 +126,40 @@ public class Unigram {
 	
 	public static double evidence (Set<String> vocabulary, HashMap<String, Double> wordFrequency, double alphak) {
 		double k = vocabulary.size();
-		double alphak_mk_product = 1;
-		double alphak_product = 1;
+		BigDecimal alphak_mk_product =  BigDecimal.valueOf(1);;
+		BigDecimal alphak_product =  BigDecimal.valueOf(1);
 		double n = totalNoWords(wordFrequency);
 		double alpha0 = alphak * k;
-		double gamma_alph0 = Equations.gamma(alpha0);
-		double gamma_alph0_N = Equations.gamma(alpha0+n);
+		BigDecimal gamma_alph0 = Equations.gamma(alpha0);
+		BigDecimal gamma_alph0_N = Equations.gamma(alpha0 + n);
+		BigDecimal gamma_alphak = Equations.gamma(alphak);
+		
+		//System.out.println("--gamma alpha0: " + alpha0);
+		//System.out.println("--gamma alpha0_N: " + gamma_alph0_N);
 		
 		for (String word : vocabulary) {
 			double mk = wordFrequency.get(word);
-			alphak_mk_product = alphak_mk_product * Equations.gamma(alphak + mk);
-			alphak_product = alphak_product * Equations.gamma(alphak);
+			alphak_mk_product = alphak_mk_product.multiply(Equations.gamma(alphak + mk));
+			alphak_product = alphak_product.multiply(gamma_alphak);
 		}
-		
-		return (gamma_alph0 * alphak_mk_product) / (gamma_alph0_N * alphak_product);
+		BigDecimal numerator = gamma_alph0.multiply(alphak_mk_product);
+		BigDecimal denominator = gamma_alph0_N.multiply(alphak_product);
+		double evidence = numerator.doubleValue()/denominator.doubleValue();
+		return evidence;
+	}
+	
+	public static double logEvidence (double evidence) {
+		return Math.log(evidence);
 	}
 	
 	public static void main(String[] args) throws IOException {
 		String dataPath = "data/";
 		String trainingData = dataPath + "training_data.txt";
 		String testData = dataPath + "test_data.txt";
-		Task1.task1Tets(trainingData, testData);
+		//BigDecimal fa = Equations.factorial(64000);
+		//System.out.println("++++ " + fa + " ++++");
+		Task1.task1Test(trainingData, testData);
+		//Task2.Task2Test(trainingData, testData);
 		
 	}
 
