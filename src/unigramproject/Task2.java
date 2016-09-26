@@ -1,7 +1,6 @@
 package unigramproject;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,8 +22,8 @@ public class Task2 {
 		HashMap<String, Double> wordFrequency_128 = Unigram.calculateFrequency(trainingWords_128, vocabulary);
 		
 		for (double alphak = 1.0; alphak < 11.0; alphak++) {
-			double evidence = Unigram.evidence(vocabulary, wordFrequency_128, alphak);
-			double logEvidence = Unigram.logEvidence(evidence);
+			double evidence = Unigram.logEvidence(vocabulary, wordFrequency_128, alphak);
+			//double logEvidence = Unigram.logEvidence(evidence);
 			HashMap<String, Double> pdProb_128 = Unigram.calculatePredictiveEst(wordFrequency_128, alphak);
 			List<Double> pdresults_128 = Unigram.predictionResults(pdProb_128, testWords);
 			double pd_pp_128 = Equations.perplexity(pdresults_128);

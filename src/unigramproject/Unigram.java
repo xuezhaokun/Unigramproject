@@ -23,7 +23,9 @@ public class Unigram {
 
                 String[] tokens = fileRead.split(" ");
                 for(String token: tokens) {
-                		words.add(token);
+                		if (token.length() > 0){
+                    		words.add(token);	
+                		}
                 }
                 fileRead = br.readLine();
             }
@@ -44,6 +46,7 @@ public class Unigram {
 			allwords.addAll(words);		
 		}
 		vocabulary.addAll(allwords);	
+		
 		System.out.println("vocabulary size: " + vocabulary.size());
 		return vocabulary;
 	}
@@ -124,32 +127,25 @@ public class Unigram {
 		return results;
 	}
 	
-	public static double evidence (Set<String> vocabulary, HashMap<String, Double> wordFrequency, double alphak) {
+	public static double logEvidence(Set<String> vocabulary, HashMap<String, Double> wordFrequency, double alphak) {
+		double evidence = 0;
 		double k = vocabulary.size();
-		BigDecimal alphak_mk_product =  BigDecimal.valueOf(1);;
-		BigDecimal alphak_product =  BigDecimal.valueOf(1);
+		double log_alphak_mk_product = 0;
+		double log_alphak_product = 0;
 		double n = totalNoWords(wordFrequency);
 		double alpha0 = alphak * k;
-		BigDecimal gamma_alph0 = Equations.gamma(alpha0);
-		BigDecimal gamma_alph0_N = Equations.gamma(alpha0 + n);
-		BigDecimal gamma_alphak = Equations.gamma(alphak);
-		
-		//System.out.println("--gamma alpha0: " + alpha0);
-		//System.out.println("--gamma alpha0_N: " + gamma_alph0_N);
-		
+		double log_gamma_alpha0 = Equations.logFactorial(alpha0);
+		double log_gamma_alpha0_N = Equations.logFactorial(alpha0 + n);
+		double log_gamma_alphak = Equations.logFactorial(alphak);
 		for (String word : vocabulary) {
 			double mk = wordFrequency.get(word);
-			alphak_mk_product = alphak_mk_product.multiply(Equations.gamma(alphak + mk));
-			alphak_product = alphak_product.multiply(gamma_alphak);
+			log_alphak_mk_product += Equations.logFactorial(alphak + mk);
+			log_alphak_product += log_gamma_alphak;
 		}
-		BigDecimal numerator = gamma_alph0.multiply(alphak_mk_product);
-		BigDecimal denominator = gamma_alph0_N.multiply(alphak_product);
-		double evidence = numerator.doubleValue()/denominator.doubleValue();
+		double numerator = log_gamma_alpha0 + log_alphak_mk_product;
+		double denominator = log_gamma_alpha0_N + log_alphak_product;
+		evidence = numerator - denominator;
 		return evidence;
-	}
-	
-	public static double logEvidence (double evidence) {
-		return Math.log(evidence);
 	}
 	
 	public static void main(String[] args) throws IOException {
@@ -158,9 +154,21 @@ public class Unigram {
 		String testData = dataPath + "test_data.txt";
 		//BigDecimal fa = Equations.factorial(64000);
 		//System.out.println("++++ " + fa + " ++++");
+
+		System.out.println("-------- Task 1 ---------");
 		Task1.task1Test(trainingData, testData);
-		//Task2.Task2Test(trainingData, testData);
+
+		System.out.println("-------- Task 2 ---------");
+		Task2.Task2Test(trainingData, testData);
 		
+		String page84 = dataPath + "pg84.txt.clean";
+		String page345 = dataPath + "pg345.txt.clean";
+		String page1188 = dataPath + "pg1188.txt.clean";
+		System.out.println("-------- Task 3 ---------");
+		Task3.Task3Test(page345, page84, page1188);
+		double test = Equations.logFactorial(3);
+		//double test1 = Equations.simpleFactorial(3);
+		//System.out.println(test1 + " test is " + test);
 	}
 
 }

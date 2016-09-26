@@ -1,10 +1,7 @@
 package unigramproject;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class Equations {
 	
@@ -34,16 +31,33 @@ public class Equations {
 		return ((mk + alphak)/(n + alpha0));
 	}
 	
-	public static BigDecimal gamma(double x) {
-		return factorial(x-1);
-	}
+//	public static BigDecimal gamma(double x) {
+//		return factorial(x-1);
+//	}
+//	
+//	public static BigDecimal factorial(double n) {
+//		 BigDecimal fact = BigDecimal.valueOf(1);
+//		 for (int i = 1; i <= n; i++){
+//		        fact = fact.multiply(BigDecimal.valueOf(i));
+//		 }
+//		return fact;
+//	}
+//	
+//	public static double simpleFactorial(double n) {
+//		 double fact = 1;
+//		 for (int i = 1; i <= n; i++){
+//		        fact = fact * i;
+//		 }
+//		return fact;
+//	}
+//	
 	
-	public static BigDecimal factorial(double n) {
-		 BigDecimal fact = BigDecimal.valueOf(1);
-		 for (int i = 1; i <= n; i++){
-		        fact = fact.multiply(BigDecimal.valueOf(i));
-		 }
-		return fact;
+	public static double logFactorial(double n) {
+		double result = 0;
+		for (double i = 1; i < n; i++) {
+			result += Math.log(i);
+		}
+		return result;
 	}
 	
 }
