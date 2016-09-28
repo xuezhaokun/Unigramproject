@@ -1,0 +1,13 @@
+After you unzip the pp1.zip file, cd to UnigramProject folder.
+
+Run execution command: java -jar pp1.jar
+
+This command will output the results for the project.
+If you need to check details of the code, run command cd src/imogramproject
+I have five .java files for this project.
+Unigram.java includes all probabilities functions, parse file functions and the main function for this project.
+Equations.java contains all helpful functions given from the project
+Task1.java defines the tests for task1
+Task2.java defines the tests for task2
+Task3.java defines the tests for task3
+
